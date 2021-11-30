@@ -106,6 +106,8 @@ void View::tick() {
     float seconds = m_time.restart() * 0.001f;
 
     // TODO: Implement the demo update here
+    std::cout << "poop" << std::endl;
+    // draw
 
     // Flag this view for repainting (Qt will call paintGL() soon after)
     update();

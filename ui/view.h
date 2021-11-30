@@ -3,7 +3,7 @@
 
 #include "GL/glew.h"
 #include <qgl.h>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QTimer>
 
 class View : public QGLWidget {
@@ -14,7 +14,7 @@ public:
     ~View();
 
 private:
-    QTime m_time;
+    QElapsedTimer m_time;
     QTimer m_timer;
     bool m_captureMouse;
 
