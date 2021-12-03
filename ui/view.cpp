@@ -27,6 +27,16 @@ View::~View()
 {
 }
 
+float View::size()
+{
+    return m_size;
+}
+
+void View::setSize(float value)
+{
+    m_size = value;
+}
+
 void View::initializeGL() {
     // All OpenGL initialization *MUST* be done during or after this
     // method. Before this method is called, there is no active OpenGL
@@ -106,7 +116,7 @@ void View::tick() {
     float seconds = m_time.restart() * 0.001f;
 
     // TODO: Implement the demo update here
-    std::cout << "poop" << std::endl;
+//    std::cout << "poop" << std::endl;
     // draw
 
     // Flag this view for repainting (Qt will call paintGL() soon after)

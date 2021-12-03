@@ -13,10 +13,16 @@ public:
     View(QWidget *parent);
     ~View();
 
+
+    float size();
+    void setSize(float value);
+
 private:
     QElapsedTimer m_time;
     QTimer m_timer;
     bool m_captureMouse;
+
+    float m_size;
 
     void initializeGL();
     void paintGL();
