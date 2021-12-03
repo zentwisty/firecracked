@@ -84,6 +84,7 @@ void View::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // TODO: Implement the demo rendering here
+
 }
 
 void View::resizeGL(int w, int h) {
@@ -93,41 +94,41 @@ void View::resizeGL(int w, int h) {
     glViewport(0, 0, w, h);
 }
 
-void View::mousePressEvent(QMouseEvent *event) {
+//void View::mousePressEvent(QMouseEvent *event) {
 
-}
+//}
 
-void View::mouseMoveEvent(QMouseEvent *event) {
-    // This starter code implements mouse capture, which gives the change in
-    // mouse position since the last mouse movement. The mouse needs to be
-    // recentered after every movement because it might otherwise run into
-    // the edge of the screen, which would stop the user from moving further
-    // in that direction. Note that it is important to check that deltaX and
-    // deltaY are not zero before recentering the mouse, otherwise there will
-    // be an infinite loop of mouse move events.
-    if(m_captureMouse) {
-        int deltaX = event->x() - width() / 2;
-        int deltaY = event->y() - height() / 2;
-        if (!deltaX && !deltaY) return;
-        QCursor::setPos(mapToGlobal(QPoint(width() / 2, height() / 2)));
+//void View::mouseMoveEvent(QMouseEvent *event) {
+//    // This starter code implements mouse capture, which gives the change in
+//    // mouse position since the last mouse movement. The mouse needs to be
+//    // recentered after every movement because it might otherwise run into
+//    // the edge of the screen, which would stop the user from moving further
+//    // in that direction. Note that it is important to check that deltaX and
+//    // deltaY are not zero before recentering the mouse, otherwise there will
+//    // be an infinite loop of mouse move events.
+//    if(m_captureMouse) {
+//        int deltaX = event->x() - width() / 2;
+//        int deltaY = event->y() - height() / 2;
+//        if (!deltaX && !deltaY) return;
+//        QCursor::setPos(mapToGlobal(QPoint(width() / 2, height() / 2)));
 
-        // TODO: Handle mouse movements here
-    }
-}
+//        // TODO: Handle mouse movements here
+//    }
+//}
 
-void View::mouseReleaseEvent(QMouseEvent *event) {
+//void View::mouseReleaseEvent(QMouseEvent *event) {
 
-}
+//}
 
-void View::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Escape) QApplication::quit();
+//void View::keyPressEvent(QKeyEvent *event) {
+//    if (event->key() == Qt::Key_Escape) QApplication::quit();
 
-    // TODO: Handle keyboard presses here
-}
+//    // TODO: Handle keyboard presses here
+//}
 
-void View::keyReleaseEvent(QKeyEvent *event) {
+//void View::keyReleaseEvent(QKeyEvent *event) {
 
-}
+//}
 
 void View::onLaunch() {
     std::cout << "size: " << m_size << std::endl;
@@ -135,15 +136,17 @@ void View::onLaunch() {
     std::cout << "red: " << m_red << std::endl;
     std::cout << "green: " << m_green << std::endl;
     std::cout << "blue: " << m_blue << std::endl;
+
+    // TODO: SPAWN THE FIREWORK HERE
 }
 
 void View::tick() {
     // Get the number of seconds since the last tick (variable update rate)
-    float seconds = m_time.restart() * 0.001f;
+    float delta_time = m_time.restart() * 0.001f;
 
-    // TODO: Implement the demo update here
+    // TODO: DRAW TO THE SCREEN HERE
 
-    // draw
+
 
     // Flag this view for repainting (Qt will call paintGL() soon after)
     update();

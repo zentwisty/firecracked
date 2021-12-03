@@ -461,8 +461,8 @@ compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: resources.qrc \
-		shaders/shader.frag \
 		shaders/shader.vert \
+		shaders/shader.frag \
 		assets/uagh.gif
 	/contrib/projects/qt5.2.0/5.2.0/gcc_64/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
@@ -976,31 +976,6 @@ mainwindow.o: ui/mainwindow.cpp ui/mainwindow.h \
 		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qcolordialog.h \
 		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qdialog.h \
 		ui_mainwindow.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/QVariant \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/QIcon \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/QApplication \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qapplication.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qeventloop.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qguiapplication.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qinputmethod.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/QGridLayout \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qlayout.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/QHBoxLayout \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/QLabel \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qlabel.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qframe.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/QPushButton \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/QSlider \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qslider.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets/QWidget \
 		ui/view.h \
 		glew-1.10.0/include/GL/glew.h \
 		../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtOpenGL/qgl.h \
