@@ -13,16 +13,16 @@ public:
     View(QWidget *parent);
     ~View();
 
-
-    float size();
-    void setSize(float value);
-
 private:
     QElapsedTimer m_time;
     QTimer m_timer;
     bool m_captureMouse;
 
-    float m_size;
+    int m_size;
+    int m_weight;
+    int m_red;
+    int m_green;
+    int m_blue;
 
     void initializeGL();
     void paintGL();
@@ -36,6 +36,13 @@ private:
     void keyReleaseEvent(QKeyEvent *event);
 
 private slots:
+    void setSize(int size);
+    void setWeight(int weight);
+    void setRed(int red);
+    void setGreen(int green);
+    void setBlue(int blue);
+
+    void onLaunch();
     void tick();
 };
 

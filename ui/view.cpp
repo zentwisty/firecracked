@@ -6,7 +6,9 @@
 #include <iostream>
 
 View::View(QWidget *parent) : QGLWidget(ViewFormat(), parent),
-    m_time(), m_timer(), m_captureMouse(false)
+    m_time(), m_timer(), m_captureMouse(false),
+    m_size(0), m_weight(0),
+    m_red(0), m_green(0), m_blue(0)
 {
     // View needs all mouse move events, not just mouse drag events
     setMouseTracking(true);
@@ -27,15 +29,31 @@ View::~View()
 {
 }
 
-float View::size()
-{
-    return m_size;
-}
-
-void View::setSize(float value)
+void View::setSize(int value)
 {
     m_size = value;
 }
+
+void View::setWeight(int weight)
+{
+    m_weight = weight;
+}
+
+void View::setRed(int red)
+{
+    m_red = red;
+}
+
+void View::setGreen(int green)
+{
+    m_green = green;
+}
+
+void View::setBlue(int blue)
+{
+    m_blue = blue;
+}
+
 
 void View::initializeGL() {
     // All OpenGL initialization *MUST* be done during or after this
@@ -111,12 +129,20 @@ void View::keyReleaseEvent(QKeyEvent *event) {
 
 }
 
+void View::onLaunch() {
+    std::cout << "size: " << m_size << std::endl;
+    std::cout << "weight: " << m_weight << std::endl;
+    std::cout << "red: " << m_red << std::endl;
+    std::cout << "green: " << m_green << std::endl;
+    std::cout << "blue: " << m_blue << std::endl;
+}
+
 void View::tick() {
     // Get the number of seconds since the last tick (variable update rate)
     float seconds = m_time.restart() * 0.001f;
 
     // TODO: Implement the demo update here
-//    std::cout << "poop" << std::endl;
+
     // draw
 
     // Flag this view for repainting (Qt will call paintGL() soon after)

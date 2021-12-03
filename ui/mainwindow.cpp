@@ -16,15 +16,3 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_sizeSlider_sliderReleased()
-{
-
-}
-
-
-void MainWindow::on_sizeSlider_valueChanged(int value)
-{
-    std::cout << "size: " << value << std::endl;
-
-}
-

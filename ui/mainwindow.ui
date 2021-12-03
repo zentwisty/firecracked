@@ -62,6 +62,9 @@
        </item>
        <item row="6" column="2" alignment="Qt::AlignHCenter">
         <widget class="QSlider" name="BSlider">
+         <property name="maximum">
+          <number>255</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -69,6 +72,9 @@
        </item>
        <item row="6" column="1" alignment="Qt::AlignHCenter">
         <widget class="QSlider" name="GSlider">
+         <property name="maximum">
+          <number>255</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -86,6 +92,9 @@
        </item>
        <item row="6" column="0" alignment="Qt::AlignHCenter">
         <widget class="QSlider" name="RSlider">
+         <property name="maximum">
+          <number>255</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -110,6 +119,9 @@
        </item>
        <item row="3" column="0" colspan="3">
         <widget class="QSlider" name="weightSlider">
+         <property name="maximum">
+          <number>100</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -120,6 +132,9 @@
        </item>
        <item row="1" column="0" colspan="3">
         <widget class="QSlider" name="sizeSlider">
+         <property name="maximum">
+          <number>100</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -167,10 +182,115 @@
    <class>View</class>
    <extends>QWidget</extends>
    <header>view.h</header>
+   <slots>
+    <slot>setSize(int)</slot>
+    <slot>setWeight(int)</slot>
+    <slot>setRed(int)</slot>
+    <slot>setGreen(int)</slot>
+    <slot>setBlue(int)</slot>
+    <slot>onLaunch()</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources>
   <include location="../resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>sizeSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>view</receiver>
+   <slot>setSize(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>46</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>502</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>weightSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>view</receiver>
+   <slot>setWeight(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>100</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>502</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>RSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>view</receiver>
+   <slot>setRed(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>37</x>
+     <y>335</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>502</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>BSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>view</receiver>
+   <slot>setBlue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>162</x>
+     <y>335</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>502</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>GSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>view</receiver>
+   <slot>setGreen(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>335</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>502</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>launchButton</sender>
+   <signal>clicked()</signal>
+   <receiver>view</receiver>
+   <slot>onLaunch()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>575</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>502</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
