@@ -4,6 +4,7 @@ uniform float firstPass;
 uniform sampler2D prevPos;
 uniform sampler2D prevVel;
 uniform int numParticles;
+uniform float dt;
 
 // output from quad.vert
 in vec2 uv;
@@ -13,7 +14,6 @@ layout(location = 0) out vec4 pos;
 layout(location = 1) out vec4 vel;
 
 const float PI = 3.14159;
-const float dt = 0.0167; // 1 sec/60 fps
 
 /*
     A particle has the following properties:
@@ -89,8 +89,9 @@ void main() {
         vel = updateVelocity(index);
         //If Particle Dies (Currently resets the position and velocity)
         if (pos.w < vel.w) {
-            pos = initPosition(index);
-            vel = initVelocity(index);
+            //pos = initPosition(index);
+            //vel = initVelocity(index);
+            //discard;
         }
     }
 }

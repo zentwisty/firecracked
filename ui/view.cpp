@@ -27,7 +27,8 @@ View::View(QWidget *parent) : QGLWidget(ViewFormat(), parent),
     m_blurFBO1(nullptr), m_blurFBO2(nullptr),
     m_particlesFBO1(nullptr), m_particlesFBO2(nullptr),
     m_firstPass(true), m_evenPass(true), m_numParticles(5000),
-    m_angleX(-0.5f), m_angleY(0.5f), m_zoom(4.f)
+    m_angleX(-0.5f), m_angleY(0.5f), m_zoom(4.f),
+    m_delta_time(0.1f)
 {
     // View needs all mouse move events, not just mouse drag events
     setMouseTracking(true);
@@ -167,7 +168,7 @@ void View::drawParticles() {
     glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "numParticles"), m_numParticles);
     glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "prevPos"), 0);
     glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "prevVel"), 1);
-
+    glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "dt"), m_delta_time);
     m_quad->draw();
 
     // TODO [Task 17] Draw the particles from nextFBO
@@ -184,6 +185,9 @@ void View::drawParticles() {
     glUniform1i(glGetUniformLocation(m_particleDrawProgram, "numParticles"), m_numParticles);
     glUniform1i(glGetUniformLocation(m_particleDrawProgram, "pos"), 0);
     glUniform1i(glGetUniformLocation(m_particleDrawProgram, "vel"), 1);
+    glUniform1f(glGetUniformLocation(m_particleDrawProgram, "red"), m_red/255.f);
+    glUniform1f(glGetUniformLocation(m_particleDrawProgram, "green"), m_green/255.f);
+    glUniform1f(glGetUniformLocation(m_particleDrawProgram, "blue"), m_blue/255.f);
     glBindVertexArray(m_particlesVAO);
     glDrawArrays(GL_TRIANGLES, 0, 3*m_numParticles);
     glBindVertexArray(0);
@@ -200,6 +204,7 @@ void View::setParticleViewport() {
     int x = (m_width - maxDim) / 2.0f;
     int y = (m_height - maxDim) / 2.0f;
     glViewport(x, y, maxDim, maxDim);
+    std::cout<<m_width<<" "<<m_height<<std::endl;
 }
 
 void View::paintGL() {
@@ -209,10 +214,18 @@ void View::paintGL() {
 }
 
 void View::resizeGL(int w, int h) {
-    float ratio = static_cast<QGuiApplication *>(QCoreApplication::instance())->devicePixelRatio();
-    w = static_cast<int>(w / ratio);
-    h = static_cast<int>(h / ratio);
-    glViewport(0, 0, w, h);
+    m_width = w;
+    m_height = h;
+
+    // TODO: [Task 5] Initialize FBOs here, with dimensions m_width and m_height.
+    m_blurFBO1 = std::make_unique<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::DEPTH_ONLY, m_width, m_height, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE);
+    m_blurFBO2 = std::make_unique<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_width, m_height, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE);
+    //       [Task 12] Pass in TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE as the last parameter
+
+//    float ratio = static_cast<QGuiApplication *>(QCoreApplication::instance())->devicePixelRatio();
+//    w = static_cast<int>(w / ratio);
+//    h = static_cast<int>(h / ratio);
+//    glViewport(0, 0, w, h);
 }
 
 //void View::mousePressEvent(QMouseEvent *event) {
@@ -263,7 +276,7 @@ void View::onLaunch() {
 
 void View::tick() {
     // Get the number of seconds since the last tick (variable update rate)
-    float delta_time = m_time.restart() * 0.001f;
+    m_delta_time = m_time.restart() * 0.001f;
 
     // TODO: DRAW TO THE SCREEN HERE
     std::cout << "Tick" << std::endl;
@@ -271,4 +284,5 @@ void View::tick() {
 
     // Flag this view for repainting (Qt will call paintGL() soon after)
     update();
+    std::cout<<width()<<std::endl;
 }

@@ -3,6 +3,9 @@
 uniform sampler2D pos;
 uniform sampler2D vel;
 uniform int numParticles;
+uniform float red;
+uniform float green;
+uniform float blue;
 
 out vec2 uv;
 out vec3 color;
@@ -95,7 +98,8 @@ void main() {
     // Calculate color based on particleID
     //color = pickRainbowColor(float(particleID)/numParticles);
     //Calculate color based on posTime
-    color = pickRainbowColor(velAge.w/posTime.w);
+    //color = pickRainbowColor(velAge.w/posTime.w);
+    color = vec3(red, green, blue);
 
     // the offset to the points of the triangle
     vec4 triPos = diameter * TRI_VERTS[triID];

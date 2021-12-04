@@ -82,6 +82,8 @@ private:
     float m_angleX, m_angleY, m_zoom;
     QPoint m_prevMousePos;
 
+    float m_delta_time;
+
 private slots:
     void setSize(int size);
     void setWeight(int weight);
