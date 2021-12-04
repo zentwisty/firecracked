@@ -23,12 +23,44 @@ win32 {
 }
 
 SOURCES += ui/mainwindow.cpp \
+    cs123_lib/errorchecker.cpp \
+    cs123_lib/resourceloader.cpp \
+    gl/GLDebug.cpp \
+    gl/datatype/FBO.cpp \
+    gl/datatype/IBO.cpp \
+    gl/datatype/VAO.cpp \
+    gl/datatype/VBO.cpp \
+    gl/datatype/VBOAttribMarker.cpp \
+    gl/textures/DepthBuffer.cpp \
+    gl/textures/RenderBuffer.cpp \
+    gl/textures/Texture.cpp \
+    gl/textures/Texture2D.cpp \
+    gl/textures/TextureParameters.cpp \
+    gl/textures/TextureParametersBuilder.cpp \
     main.cpp \
     glew-1.10.0/src/glew.c \
+    ui/openglshape.cpp \
     ui/view.cpp \
     ui/viewformat.cpp
 
 HEADERS += ui/mainwindow.h \
+    cs123_lib/errorchecker.h \
+    cs123_lib/resourceloader.h \
+    cs123_lib/sphere.h \
+    gl/GLDebug.h \
+    gl/datatype/FBO.h \
+    gl/datatype/IBO.h \
+    gl/datatype/VAO.h \
+    gl/datatype/VBO.h \
+    gl/datatype/VBOAttribMarker.h \
+    gl/shaders/ShaderAttribLocations.h \
+    gl/textures/DepthBuffer.h \
+    gl/textures/RenderBuffer.h \
+    gl/textures/Texture.h \
+    gl/textures/Texture2D.h \
+    gl/textures/TextureParameters.h \
+    gl/textures/TextureParametersBuilder.h \
+    ui/openglshape.h \
     ui_mainwindow.h \
     glew-1.10.0/include/GL/glew.h \
     ui/view.h \
@@ -63,12 +95,22 @@ macx {
 }
 
 RESOURCES += \
-    resources.qrc
+    resources.qrc \
+    shaders/shaders.qrc
 
 DISTFILES += \
+    shaders/horizontalBlur.frag \
     shaders/normals/normals.vert \
     shaders/normals/normals.frag \
     shaders/normals/normals.gsh \
     shaders/normals/normalsArrow.gsh \
     shaders/normals/normalsArrow.frag \
-    shaders/normals/normalsArrow.vert
+    shaders/normals/normalsArrow.vert \
+    shaders/particles_draw.frag \
+    shaders/particles_draw.vert \
+    shaders/particles_update.frag \
+    shaders/phong.frag \
+    shaders/phong.vert \
+    shaders/quad.vert \
+    shaders/texture.frag \
+    shaders/verticalBlur.frag

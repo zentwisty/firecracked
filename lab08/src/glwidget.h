@@ -2,7 +2,7 @@
 #define GLWIDGET_H
 #include "GL/glew.h"
 #include <QGLWidget>
-#include <QTimer>
+//#include <QTimer>
 
 #include "glm/glm.hpp"            // glm::vec*, mat*, and basic glm functions
 #include "glm/gtx/transform.hpp"  // glm::translate, scale, rotate

@@ -91,6 +91,7 @@ void GLWidget::initializeGL() {
 }
 
 void GLWidget::paintGL() {
+    //std::cout<<"PaintGL"<<std::endl;
     glClear(GL_COLOR_BUFFER_BIT);
     switch (settings.mode) {
         case MODE_BLUR:
