@@ -19,17 +19,18 @@ using namespace CS123::GL;
 
 View::View(QWidget *parent) : QGLWidget(ViewFormat(), parent),
     m_time(), m_timer(), m_captureMouse(false),
-    m_size(0), m_weight(0),
-    m_red(0), m_green(0), m_blue(0),
+    m_drag(50), m_weight(10),                   // IF YOU CHANGE THESE DEFAULTS UPDATE THE UI TOO
+    m_red(230), m_green(100), m_blue(130),      // IF YOU CHANGE THESE DEFAULTS UPDATE THE UI TOO
     m_width(width()), m_height(height()),
-    m_phongProgram(0), m_textureProgram(0), m_horizontalBlurProgram(0), m_verticalBlurProgram(0),
-    m_quad(nullptr), m_sphere(nullptr),
+    m_phongProgram(0), m_textureProgram(0), m_horizontalBlurProgram(0), m_verticalBlurProgram(0), m_postProcessingProgram(0),
+    m_quad(nullptr),
     m_blurFBO1(nullptr), m_blurFBO2(nullptr),
-    m_particlesFBO1(nullptr), m_particlesFBO2(nullptr),
+    m_particlesFBO1(nullptr), m_particlesFBO2(nullptr), m_particlesFBOfinal(nullptr),
     m_firstPass(true), m_evenPass(true), m_numParticles(5000),
     m_angleX(-0.5f), m_angleY(0.5f), m_zoom(4.f),
     m_delta_time(0.1f),
-    m_firework(nullptr)
+    m_firework(nullptr),
+    m_spawnPoint(0.f, 0.f, 0.f)
 {
     // View needs all mouse move events, not just mouse drag events
     setMouseTracking(true);
@@ -51,9 +52,9 @@ View::~View()
     glDeleteVertexArrays(1, &m_particlesVAO);
 }
 
-void View::setSize(int value)
+void View::setDrag(int drag)
 {
-    m_size = value;
+    m_drag = drag;
 }
 
 void View::setWeight(int weight)
@@ -120,6 +121,8 @@ void View::initializeGL() {
                 ":/shaders/quad.vert", ":/shaders/particles_update.frag");
     m_particleDrawProgram = ResourceLoader::createShaderProgram(
                 ":/shaders/particles_draw.vert", ":/shaders/particles_draw.frag");
+    m_postProcessingProgram = ResourceLoader::createShaderProgram(
+                ":/shaders/quad.vert", ":/shaders/postProcessing.frag");
 
 
     // TODO: [Task 6] Fill in the positions and UV coordinates to draw a fullscreen quad
@@ -146,6 +149,9 @@ void View::initializeGL() {
     m_particlesFBO2 = std::make_shared<FBO>(2, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_numParticles, 1,
                                             TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE,
                                             TextureParameters::FILTER_METHOD::NEAREST, GL_FLOAT);
+    m_particlesFBOfinal = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_width, m_height, \
+                                                TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE);
+
     // Print the max FBO dimension.
     GLint maxRenderBufferSize;
     glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &maxRenderBufferSize);
@@ -154,41 +160,45 @@ void View::initializeGL() {
 }
 
 void View::drawBlur() {
-    //       [Task 5b] Bind m_blurFBO1
+
+    // blur horizontally
     m_blurFBO1->bind();
-    // TODO: [Task 1] Do drawing here!
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glUseProgram(m_phongProgram);
-    GLint viewUniformLoc = glGetUniformLocation(m_phongProgram, "view");
-    glUniformMatrix4fv(viewUniformLoc, 1, GL_FALSE, glm::value_ptr(m_view));
-    GLint projUniformLoc = glGetUniformLocation(m_phongProgram, "projection");
-    glUniformMatrix4fv(projUniformLoc, 1, GL_FALSE, glm::value_ptr(m_projection));
-    GLint modelUniformLoc = glGetUniformLocation(m_phongProgram, "model");
-    glUniformMatrix4fv(modelUniformLoc, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::vec3(0.0f, 1.2f, 0.0f))));
-    //       [Task 1.5] Call glViewport so that the viewport is the right size
-    glViewport(0, 0, m_width, m_height);
-    m_quad->draw();
-    //       [Task 8] Bind m_blurFBO1's color texture
-    //m_blurFBO1->getColorAttachment(0).bind();
-    //       [Task 7] Unbind m_blurFBO1 and render a full screen quad
-    m_blurFBO1->unbind();
-    m_blurFBO2->bind();
     glUseProgram(m_horizontalBlurProgram);
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, m_width, m_height);
-    m_blurFBO1->getColorAttachment(0).bind();
+    glActiveTexture(GL_TEXTURE0);
+    m_particlesFBOfinal->getColorAttachment(0).bind();
     m_quad->draw();
-    m_blurFBO2->unbind();
+    m_blurFBO1->unbind();
     //m_blurFBO2->getColorAttachment(0).bind();
+
+
+    // blur vertically
+    m_blurFBO2->bind();
     glUseProgram(m_verticalBlurProgram);
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, m_width, m_height);
-    m_blurFBO2->getColorAttachment(0).bind();
+    glActiveTexture(GL_TEXTURE0);
+    m_blurFBO1->getColorAttachment(0).bind();
     m_quad->draw();
-    //       [Task 11] Bind m_blurFBO2
+    m_blurFBO2->unbind();
+
+
+    // post processing
+    glUseProgram(m_postProcessingProgram);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, m_width, m_height);
+    glActiveTexture(GL_TEXTURE0);
+    m_particlesFBOfinal->getColorAttachment(0).bind();
+    glActiveTexture(GL_TEXTURE1);
+    m_blurFBO2->getColorAttachment(0).bind();
+    glUniform1i(glGetUniformLocation(m_postProcessingProgram, "particleColor"), 0);
+    glUniform1i(glGetUniformLocation(m_postProcessingProgram, "blurColor"), 1);
+    m_quad->draw();
+
 
 }
 
@@ -254,13 +264,14 @@ void View::drawParticles() {
     glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "prevPos"), 0);
     glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "prevVel"), 1);
     glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "dt"), m_delta_time);
-    glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "B"), m_size);
+    glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "B"), m_firework->m_drag / 100.f);
+    glUniform3f(glGetUniformLocation(m_particleUpdateProgram, "spawnPoint"), m_spawnPoint.x, m_spawnPoint.y, m_spawnPoint.z);
     m_quad->draw();
-    drawBlur();
+    nextFBO->unbind();
 
     // TODO [Task 17] Draw the particles from nextFBO
 
-    nextFBO->unbind();
+    m_particlesFBOfinal->bind();
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
     glUseProgram(m_particleDrawProgram);
@@ -275,10 +286,16 @@ void View::drawParticles() {
     glUniform1f(glGetUniformLocation(m_particleDrawProgram, "red"), m_firework->m_red/255.f);
     glUniform1f(glGetUniformLocation(m_particleDrawProgram, "green"), m_firework->m_green/255.f);
     glUniform1f(glGetUniformLocation(m_particleDrawProgram, "blue"), m_firework->m_blue/255.f);
+
+
     glBindVertexArray(m_particlesVAO);
     glDrawArrays(GL_TRIANGLES, 0, 3*m_firework->m_numParticles);
     glBindVertexArray(0);
-    glActiveTexture(GL_TEXTURE0);
+
+    m_particlesFBOfinal->unbind();
+
+    drawBlur();
+
 
     m_firework->m_firstPass = false;
     m_firework->m_evenPass = !m_firework->m_evenPass;
@@ -292,7 +309,7 @@ void View::setParticleViewport() {
     int x = (m_width - maxDim) / 2.0f;
     int y = (m_height - maxDim) / 2.0f;
     glViewport(x, y, maxDim, maxDim);
-    std::cout<<m_width<<" "<<m_height<<std::endl;
+//    std::cout<<m_width<<" "<<m_height<<std::endl;
 }
 
 void View::paintGL() {
@@ -300,7 +317,7 @@ void View::paintGL() {
     if(m_firework != nullptr){
         drawParticles();
     }
-    std::cout << "paintGL" << std::endl;
+//    std::cout << "paintGL" << std::endl;
 }
 
 void View::resizeGL(int w, int h) {
@@ -308,7 +325,8 @@ void View::resizeGL(int w, int h) {
     m_height = h;
 
     // TODO: [Task 5] Initialize FBOs here, with dimensions m_width and m_height.
-    m_blurFBO1 = std::make_unique<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::DEPTH_ONLY, m_width, m_height, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE);
+    m_particlesFBOfinal = std::make_shared<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_width, m_height, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE);
+    m_blurFBO1 = std::make_unique<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_width, m_height, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE);
     m_blurFBO2 = std::make_unique<FBO>(1, FBO::DEPTH_STENCIL_ATTACHMENT::NONE, m_width, m_height, TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE);
     //       [Task 12] Pass in TextureParameters::WRAP_METHOD::CLAMP_TO_EDGE as the last parameter
 
@@ -318,9 +336,12 @@ void View::resizeGL(int w, int h) {
 //    glViewport(0, 0, w, h);
 }
 
-//void View::mousePressEvent(QMouseEvent *event) {
+void View::mousePressEvent(QMouseEvent *event) {
+    float x =  2 * ((event->x() / static_cast<float>(m_width))  - .5f);
+    float y = -2 * ((event->y() / static_cast<float>(m_height)) - .5f);
+    m_spawnPoint = glm::vec3(x, y, 0.f);
 
-//}
+}
 
 //void View::mouseMoveEvent(QMouseEvent *event) {
 //    // This starter code implements mouse capture, which gives the change in
@@ -355,14 +376,14 @@ void View::resizeGL(int w, int h) {
 //}
 
 void View::onLaunch() {
-    std::cout << "size: " << m_size << std::endl;
+    std::cout << "size: " << m_drag << std::endl;
     std::cout << "weight: " << m_weight << std::endl;
     std::cout << "red: " << m_red << std::endl;
     std::cout << "green: " << m_green << std::endl;
     std::cout << "blue: " << m_blue << std::endl;
 
     // TODO: SPAWN THE FIREWORK HERE
-    m_firework = std::make_unique<Firework>(m_red, m_green, m_blue);
+    m_firework = std::make_unique<Firework>(m_drag, m_weight, m_red, m_green, m_blue);
 }
 
 void View::tick() {
@@ -370,10 +391,10 @@ void View::tick() {
     m_delta_time = m_time.restart() * 0.001f;
 
     // TODO: DRAW TO THE SCREEN HERE
-    std::cout << "Tick" << std::endl;
+//    std::cout << "Tick" << std::endl;
 
 
     // Flag this view for repainting (Qt will call paintGL() soon after)
     update();
-    std::cout<<width()<<std::endl;
+//    std::cout<<width()<<std::endl;
 }

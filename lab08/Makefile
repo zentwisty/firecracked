@@ -487,15 +487,15 @@ compiler_rcc_make_all: qrc_shaders.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) qrc_shaders.cpp
 qrc_shaders.cpp: shaders/shaders.qrc \
-		shaders/verticalBlur.frag \
-		shaders/particles_draw.frag \
-		shaders/quad.vert \
-		shaders/particles_update.frag \
-		shaders/phong.frag \
-		shaders/particles_draw.vert \
+		shaders/texture.frag \
 		shaders/phong.vert \
+		shaders/particles_update.frag \
+		shaders/particles_draw.vert \
 		shaders/horizontalBlur.frag \
-		shaders/texture.frag
+		shaders/verticalBlur.frag \
+		shaders/phong.frag \
+		shaders/quad.vert \
+		shaders/particles_draw.frag
 	/contrib/projects/qt5.2.0/5.2.0/gcc_64/bin/rcc -name shaders shaders/shaders.qrc -o qrc_shaders.cpp
 
 compiler_moc_header_make_all: moc_mainwindow.cpp moc_glwidget.cpp moc_databinding.cpp
@@ -629,9 +629,6 @@ moc_mainwindow.cpp: ../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gc
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtOpenGL/qtopenglglobal.h \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/QSurfaceFormat \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qsurfaceformat.h \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/QTimer \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qtimer.h \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qbasictimer.h \
 		glm/glm.hpp \
 		glm/detail/_fixes.hpp \
 		glm/fwd.hpp \
@@ -845,9 +842,6 @@ moc_glwidget.cpp: ../glew-1.10.0/include/GL/glew.h \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtOpenGL/qtopenglglobal.h \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/QSurfaceFormat \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qsurfaceformat.h \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/QTimer \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qtimer.h \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qbasictimer.h \
 		glm/glm.hpp \
 		glm/detail/_fixes.hpp \
 		glm/fwd.hpp \
@@ -1222,9 +1216,6 @@ mainwindow.o: src/mainwindow.cpp src/mainwindow.h \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtOpenGL/qtopenglglobal.h \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/QSurfaceFormat \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qsurfaceformat.h \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/QTimer \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qtimer.h \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qbasictimer.h \
 		glm/glm.hpp \
 		glm/detail/_fixes.hpp \
 		glm/fwd.hpp \
@@ -1483,9 +1474,6 @@ main.o: src/main.cpp ../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/g
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtOpenGL/qtopenglglobal.h \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/QSurfaceFormat \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qsurfaceformat.h \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/QTimer \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qtimer.h \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qbasictimer.h \
 		glm/glm.hpp \
 		glm/detail/_fixes.hpp \
 		glm/fwd.hpp \
@@ -1699,9 +1687,6 @@ glwidget.o: src/glwidget.cpp src/glwidget.h \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtOpenGL/qtopenglglobal.h \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/QSurfaceFormat \
 		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qsurfaceformat.h \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/QTimer \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qtimer.h \
-		../../../../../../sys/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qbasictimer.h \
 		glm/glm.hpp \
 		glm/detail/_fixes.hpp \
 		glm/fwd.hpp \

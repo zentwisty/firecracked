@@ -21,9 +21,11 @@ using namespace CS123::GL;
 class Firework
 {
 public:
-    Firework(int red, int green, int blue);
+    Firework(int drag, int weight, int red, int green, int blue);
     ~Firework();
 
+    int m_drag;
+    int m_weight;
     int m_red;
     int m_green;
     int m_blue;

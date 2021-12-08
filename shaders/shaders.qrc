@@ -9,5 +9,6 @@
         <file>particles_draw.frag</file>
         <file>particles_draw.vert</file>
         <file>particles_update.frag</file>
+        <file>postProcessing.frag</file>
     </qresource>
 </RCC>

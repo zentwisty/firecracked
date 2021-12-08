@@ -6,6 +6,7 @@ uniform sampler2D prevVel;
 uniform int numParticles;
 uniform float dt;
 uniform float B;
+uniform vec3 spawnPoint;
 
 // output from quad.vert
 in vec2 uv;
@@ -37,14 +38,13 @@ float calculateLifetime(int index) {
 
 vec2 calculateInitialVelocity(int index) {
     float theta = 2*PI * hash(index * 872.0238);
-    const float MAX_VEL = 0.3;
+    const float MAX_VEL = 0.5;
     float velMag = MAX_VEL * hash(index * 98723.345);
     return velMag * vec2(cos(theta), sin(theta));
 }
 
 vec4 initPosition(int index) {
-    const vec3 spawn = vec3(0);
-    return vec4(spawn, calculateLifetime(index));
+    return vec4(spawnPoint, calculateLifetime(index));
 }
 
 vec4 initVelocity(int index) {
@@ -62,16 +62,16 @@ vec4 updatePosition(int index) {
 }
 
 vec4 updateVelocity(int index) {
-    const float G = -0.1;
+    const float G = -0.2;
     // TODO [Task 16]
     // - sample prevVel at uv
     // - One force is gravity in y direction.  Add G * dt.
-    vel.y = texture(prevVel, uv).y + G * dt;
     vel.x = texture(prevVel, uv).x;
+    vel.y = texture(prevVel, uv).y + G * dt;
     vel.z = texture(prevVel, uv).z;
     // - Second force is linear drag in -v direction.
-    vel.y += -vel.y*B*dt;
     vel.x += -vel.x*B*dt;
+    vel.y += -vel.y*B*dt;
     vel.z += -vel.z*B*dt;
     // - w component is age, so add dt
     vel.w = texture(prevVel, uv).w + dt;

@@ -40,7 +40,7 @@ private:
     QTimer m_timer;
     bool m_captureMouse;
 
-    int m_size;
+    int m_drag;
     int m_weight;
     int m_red;
     int m_green;
@@ -50,12 +50,13 @@ private:
     void drawParticles();
     void setParticleViewport();
 
-//    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
 //    void mouseMoveEvent(QMouseEvent *event);
 //    void mouseReleaseEvent(QMouseEvent *event);
 
 //    void keyPressEvent(QKeyEvent *event);
 //    void keyReleaseEvent(QKeyEvent *event);
+
     int m_width;
     int m_height;
 
@@ -65,9 +66,9 @@ private:
     GLuint m_verticalBlurProgram;
     GLuint m_particleUpdateProgram;
     GLuint m_particleDrawProgram;
+    GLuint m_postProcessingProgram;
 
     std::unique_ptr<OpenGLShape> m_quad;
-    std::unique_ptr<OpenGLShape> m_sphere;
 
     std::unique_ptr<FBO> m_blurFBO1;
     std::unique_ptr<FBO> m_blurFBO2;
@@ -75,6 +76,7 @@ private:
     GLuint m_particlesVAO;
     std::shared_ptr<FBO> m_particlesFBO1;
     std::shared_ptr<FBO> m_particlesFBO2;
+    std::shared_ptr<FBO> m_particlesFBOfinal;
     bool m_firstPass;
     bool m_evenPass;
     int m_numParticles;
@@ -89,8 +91,10 @@ private:
 
     std::unique_ptr<Firework> m_firework;
 
+    glm::vec3 m_spawnPoint;
+
 private slots:
-    void setSize(int size);
+    void setDrag(int drag);
     void setWeight(int weight);
     void setRed(int red);
     void setGreen(int green);
