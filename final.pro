@@ -39,6 +39,7 @@ SOURCES += ui/mainwindow.cpp \
     gl/textures/TextureParametersBuilder.cpp \
     main.cpp \
     glew-1.10.0/src/glew.c \
+    ui/Firework.cpp \
     ui/openglshape.cpp \
     ui/view.cpp \
     ui/viewformat.cpp
@@ -60,6 +61,7 @@ HEADERS += ui/mainwindow.h \
     gl/textures/Texture2D.h \
     gl/textures/TextureParameters.h \
     gl/textures/TextureParametersBuilder.h \
+    ui/Firework.h \
     ui/openglshape.h \
     ui_mainwindow.h \
     glew-1.10.0/include/GL/glew.h \

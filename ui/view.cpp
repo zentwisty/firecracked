@@ -28,7 +28,8 @@ View::View(QWidget *parent) : QGLWidget(ViewFormat(), parent),
     m_particlesFBO1(nullptr), m_particlesFBO2(nullptr),
     m_firstPass(true), m_evenPass(true), m_numParticles(5000),
     m_angleX(-0.5f), m_angleY(0.5f), m_zoom(4.f),
-    m_delta_time(0.1f)
+    m_delta_time(0.1f),
+    m_firework(nullptr)
 {
     // View needs all mouse move events, not just mouse drag events
     setMouseTracking(true);
@@ -152,7 +153,47 @@ void View::initializeGL() {
 
 }
 
+void View::drawBlur() {
+    //       [Task 5b] Bind m_blurFBO1
+    m_blurFBO1->bind();
+    // TODO: [Task 1] Do drawing here!
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glUseProgram(m_phongProgram);
+    GLint viewUniformLoc = glGetUniformLocation(m_phongProgram, "view");
+    glUniformMatrix4fv(viewUniformLoc, 1, GL_FALSE, glm::value_ptr(m_view));
+    GLint projUniformLoc = glGetUniformLocation(m_phongProgram, "projection");
+    glUniformMatrix4fv(projUniformLoc, 1, GL_FALSE, glm::value_ptr(m_projection));
+    GLint modelUniformLoc = glGetUniformLocation(m_phongProgram, "model");
+    glUniformMatrix4fv(modelUniformLoc, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::vec3(0.0f, 1.2f, 0.0f))));
+    //       [Task 1.5] Call glViewport so that the viewport is the right size
+    glViewport(0, 0, m_width, m_height);
+    m_quad->draw();
+    //       [Task 8] Bind m_blurFBO1's color texture
+    //m_blurFBO1->getColorAttachment(0).bind();
+    //       [Task 7] Unbind m_blurFBO1 and render a full screen quad
+    m_blurFBO1->unbind();
+    m_blurFBO2->bind();
+    glUseProgram(m_horizontalBlurProgram);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, m_width, m_height);
+    m_blurFBO1->getColorAttachment(0).bind();
+    m_quad->draw();
+    m_blurFBO2->unbind();
+    //m_blurFBO2->getColorAttachment(0).bind();
+    glUseProgram(m_verticalBlurProgram);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, m_width, m_height);
+    m_blurFBO2->getColorAttachment(0).bind();
+    m_quad->draw();
+    //       [Task 11] Bind m_blurFBO2
+
+}
+
 void View::drawParticles() {
+    /*
     auto prevFBO = m_evenPass ? m_particlesFBO1 : m_particlesFBO2;
     auto nextFBO = m_evenPass ? m_particlesFBO2 : m_particlesFBO1;
     float firstPass = m_firstPass ? 1.0f : 0.0f;
@@ -195,6 +236,53 @@ void View::drawParticles() {
 
     m_firstPass = false;
     m_evenPass = !m_evenPass;
+    */
+
+    auto prevFBO = m_firework->m_evenPass ? m_firework->m_particlesFBO1 : m_firework->m_particlesFBO2;
+    auto nextFBO = m_firework->m_evenPass ? m_firework->m_particlesFBO2 : m_firework->m_particlesFBO1;
+    float firstPass = m_firework->m_firstPass ? 1.0f : 0.0f;
+    // TODO [Task 14] Move the particles from prevFBO to nextFBO while updating them
+
+    nextFBO->bind();
+    glUseProgram(m_particleUpdateProgram);
+    glActiveTexture(GL_TEXTURE0);
+    prevFBO->getColorAttachment(0).bind();
+    glActiveTexture(GL_TEXTURE1);
+    prevFBO->getColorAttachment(1).bind();
+    glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "firstPass"), firstPass);
+    glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "numParticles"), m_firework->m_numParticles);
+    glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "prevPos"), 0);
+    glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "prevVel"), 1);
+    glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "dt"), m_delta_time);
+    glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "B"), m_size);
+    m_quad->draw();
+    drawBlur();
+
+    // TODO [Task 17] Draw the particles from nextFBO
+
+    nextFBO->unbind();
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glUseProgram(m_particleDrawProgram);
+    setParticleViewport();
+    glActiveTexture(GL_TEXTURE0);
+    nextFBO->getColorAttachment(0).bind();
+    glActiveTexture(GL_TEXTURE1);
+    nextFBO->getColorAttachment(1).bind();
+    glUniform1i(glGetUniformLocation(m_particleDrawProgram, "numParticles"), m_firework->m_numParticles);
+    glUniform1i(glGetUniformLocation(m_particleDrawProgram, "pos"), 0);
+    glUniform1i(glGetUniformLocation(m_particleDrawProgram, "vel"), 1);
+    glUniform1f(glGetUniformLocation(m_particleDrawProgram, "red"), m_firework->m_red/255.f);
+    glUniform1f(glGetUniformLocation(m_particleDrawProgram, "green"), m_firework->m_green/255.f);
+    glUniform1f(glGetUniformLocation(m_particleDrawProgram, "blue"), m_firework->m_blue/255.f);
+    glBindVertexArray(m_particlesVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3*m_firework->m_numParticles);
+    glBindVertexArray(0);
+    glActiveTexture(GL_TEXTURE0);
+
+    m_firework->m_firstPass = false;
+    m_firework->m_evenPass = !m_firework->m_evenPass;
+
 }
 
 // Sets the viewport to ensure that {0,0} is always in the center of the viewport
@@ -209,7 +297,9 @@ void View::setParticleViewport() {
 
 void View::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    drawParticles();
+    if(m_firework != nullptr){
+        drawParticles();
+    }
     std::cout << "paintGL" << std::endl;
 }
 
@@ -272,6 +362,7 @@ void View::onLaunch() {
     std::cout << "blue: " << m_blue << std::endl;
 
     // TODO: SPAWN THE FIREWORK HERE
+    m_firework = std::make_unique<Firework>(m_red, m_green, m_blue);
 }
 
 void View::tick() {

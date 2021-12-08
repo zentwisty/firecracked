@@ -5,6 +5,7 @@ uniform sampler2D prevPos;
 uniform sampler2D prevVel;
 uniform int numParticles;
 uniform float dt;
+uniform float B;
 
 // output from quad.vert
 in vec2 uv;
@@ -62,7 +63,6 @@ vec4 updatePosition(int index) {
 
 vec4 updateVelocity(int index) {
     const float G = -0.1;
-    const float B = 1.0;
     // TODO [Task 16]
     // - sample prevVel at uv
     // - One force is gravity in y direction.  Add G * dt.

@@ -16,6 +16,8 @@
 
 #include "gl/datatype/FBO.h"
 
+#include "Firework.h"
+
 class OpenGLShape;
 
 using namespace CS123::GL;
@@ -44,6 +46,7 @@ private:
     int m_green;
     int m_blue;
 
+    void drawBlur();
     void drawParticles();
     void setParticleViewport();
 
@@ -83,6 +86,8 @@ private:
     QPoint m_prevMousePos;
 
     float m_delta_time;
+
+    std::unique_ptr<Firework> m_firework;
 
 private slots:
     void setSize(int size);
