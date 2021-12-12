@@ -3,6 +3,7 @@
 in vec2 uv;
 
 uniform sampler2D tex;
+uniform int supportWidth;
 
 out vec4 fragColor;
 
@@ -13,7 +14,7 @@ void main(){
     vec2 texelSize;
     texelSize = 1.0 / textureSize(tex, 0).xy;
 
-    const int supportWidth = 20;
+    const int supportWidth = 40;
 
     fragColor = vec4(0.0);
     float weights = 0.0;

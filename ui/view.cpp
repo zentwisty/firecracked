@@ -167,6 +167,7 @@ void View::drawBlur() {
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, m_width, m_height);
+    //glUniform1f(glGetUniformLocation(m_horizontalBlurProgram, "supportWidth"), 20);
     glActiveTexture(GL_TEXTURE0);
     m_particlesFBOfinal->getColorAttachment(0).bind();
     m_quad->draw();
@@ -180,6 +181,7 @@ void View::drawBlur() {
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, m_width, m_height);
+    //glUniform1f(glGetUniformLocation(m_verticalBlurProgram, "supportWidth"), 20);
     glActiveTexture(GL_TEXTURE0);
     m_blurFBO1->getColorAttachment(0).bind();
     m_quad->draw();
@@ -197,6 +199,7 @@ void View::drawBlur() {
     m_blurFBO2->getColorAttachment(0).bind();
     glUniform1i(glGetUniformLocation(m_postProcessingProgram, "particleColor"), 0);
     glUniform1i(glGetUniformLocation(m_postProcessingProgram, "blurColor"), 1);
+    glUniform1f(glGetUniformLocation(m_postProcessingProgram, "blurIntensity"), 2);
     m_quad->draw();
 
 
@@ -340,7 +343,7 @@ void View::mousePressEvent(QMouseEvent *event) {
     float x =  2 * ((event->x() / static_cast<float>(m_width))  - .5f);
     float y = -2 * ((event->y() / static_cast<float>(m_height)) - .5f);
     m_spawnPoint = glm::vec3(x, y, 0.f);
-
+    m_firework = std::make_unique<Firework>(m_drag, m_weight, m_red, m_green, m_blue);
 }
 
 //void View::mouseMoveEvent(QMouseEvent *event) {
@@ -383,7 +386,7 @@ void View::onLaunch() {
     std::cout << "blue: " << m_blue << std::endl;
 
     // TODO: SPAWN THE FIREWORK HERE
-    m_firework = std::make_unique<Firework>(m_drag, m_weight, m_red, m_green, m_blue);
+    //m_firework = std::make_unique<Firework>(m_drag, m_weight, m_red, m_green, m_blue);
 }
 
 void View::tick() {

@@ -6,6 +6,7 @@ uniform int numParticles;
 uniform float red;
 uniform float green;
 uniform float blue;
+uniform float lifetime;
 
 out vec2 uv;
 out vec3 color;
@@ -91,9 +92,9 @@ void main() {
     velAge = texelFetch(vel, ivec2(particleID,0), 0);
 
     // Calculate diameter based on age and lifetime
-    float diameter = 0.02;
-    diameter *= min(min(1.0, velAge.w / (0.1 * posTime.w)),
-                    min(1.0, abs(posTime.w - velAge.w) / (0.1 * posTime.w)));
+    float diameter = max(0.02*(1 -velAge.w/posTime.w), 0.0);
+    //diameter *= min(min(1.0, velAge.w / (0.1 * posTime.w)),
+    //                min(1.0, abs(posTime.w - velAge.w) / (0.1 * posTime.w)));
 
     // Calculate color based on particleID
     //color = pickRainbowColor(float(particleID)/numParticles);

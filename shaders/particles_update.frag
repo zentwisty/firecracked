@@ -31,16 +31,18 @@ float hash(float n) { return fract(sin(n)*753.5453123); }
 // Helper functions to procedurally generate lifetimes and initial velocities
 // based on particle index
 float calculateLifetime(int index) {
-    const float MAX_LIFETIME = 1.0;
-    const float MIN_LIFETIME = 0.5;
+    const float MAX_LIFETIME = 2.0;
+    const float MIN_LIFETIME = 1.5;
     return MIN_LIFETIME + (MAX_LIFETIME - MIN_LIFETIME) * hash(index * 2349.2693);
 }
 
-vec2 calculateInitialVelocity(int index) {
-    float theta = 2*PI * hash(index * 872.0238);
-    const float MAX_VEL = 0.5;
-    float velMag = MAX_VEL * hash(index * 98723.345);
-    return velMag * vec2(cos(theta), sin(theta));
+vec3 calculateInitialVelocity(int index) {
+    float theta = 2*PI * hash(index * 8.0238 * dt);
+    float phi = PI * hash(index * 7.0123 * dt);
+    //float theta = index;
+    const float MIN_VEL = 1;
+    float velMag = MIN_VEL + 0.1 * hash(index * 98723.345);
+    return velMag * vec3(sin(phi)*cos(theta), sin(phi)*sin(theta), cos(phi));
 }
 
 vec4 initPosition(int index) {
@@ -48,7 +50,7 @@ vec4 initPosition(int index) {
 }
 
 vec4 initVelocity(int index) {
-    return vec4(calculateInitialVelocity(index), 0, 0);
+    return vec4(calculateInitialVelocity(index), 0);
 }
 
 vec4 updatePosition(int index) {
