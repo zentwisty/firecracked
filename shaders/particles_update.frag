@@ -30,47 +30,29 @@ const float PI = 3.14159;
 
 // A helpful procedural "random" number generator
 float hash(float n) {
-    return fract(sin(n)*753.5453123);
+    return fract(sin(n)*75.5453123);
 }
 
 // Helper functions to procedurally generate lifetimes and initial velocities
 // based on particle index
 float calculateLifetime(int index) {
-    if(index == 0){
-        const float MAX_LIFETIME = 2.0;
-        const float MIN_LIFETIME = 1.5;
-        return MIN_LIFETIME + (MAX_LIFETIME - MIN_LIFETIME) * hash(0.5 * 2349.2693 * time);
-    }
     const float MAX_LIFETIME = 2.0;
     const float MIN_LIFETIME = 1.5;
-    return MIN_LIFETIME + (MAX_LIFETIME - MIN_LIFETIME) * hash(index * 2349.2693 * time);
+    return MIN_LIFETIME + (MAX_LIFETIME - MIN_LIFETIME) * hash(index * 2349.2693 + time);
 }
 
 float calculateTrailLifetime(int index) {
-    if(index == 0){
-        const float MAX_TRAIL_LIFETIME = 0.25;
-        const float MIN_TRAIL_LIFETIME = 0.1;
-        return MIN_TRAIL_LIFETIME + (MAX_TRAIL_LIFETIME - MIN_TRAIL_LIFETIME) * hash(0.5 * 2349.2693 * time);
-    }
     const float MAX_TRAIL_LIFETIME = 0.25;
     const float MIN_TRAIL_LIFETIME = 0.1;
-    return MIN_TRAIL_LIFETIME + (MAX_TRAIL_LIFETIME - MIN_TRAIL_LIFETIME) * hash(index * 2349.2693 * time);
+    return MIN_TRAIL_LIFETIME + (MAX_TRAIL_LIFETIME - MIN_TRAIL_LIFETIME) * hash(index * 2349.2693 + time);
 }
 
 vec3 calculateInitialVelocity(int index) {
-    if(index == 0){
-        float theta = 2*PI * hash(0.5 * 8.0238 * dt * time);
-        float phi = PI * hash(0.5 * 7.0123 * dt * time);
-        //float theta = index;
-        const float MIN_VEL = 1;
-        float velMag = MIN_VEL + 0.1 * hash(0.5 * 98723.345 * time);
-        return velMag * vec3(sin(phi)*cos(theta), sin(phi)*sin(theta), cos(phi));
-    }
-    float theta = 2*PI * hash(index * 8.0238 * dt * time);
-    float phi = PI * hash(index * 7.0123 * dt * time);
+    float theta = 2*PI * hash(index * 8.0238 + time);
+    float phi = PI * hash(index * 7.0123 + time);
     //float theta = index;
     const float MIN_VEL = 1;
-    float velMag = MIN_VEL + 0.1 * hash(index * 98723.345 * time);
+    float velMag = MIN_VEL + 0.1 * hash(index * 98723.345 + time);
     return velMag * vec3(sin(phi)*cos(theta), sin(phi)*sin(theta), cos(phi));
 }
 
@@ -84,8 +66,8 @@ vec4 initTrailPosition(int index) {
 
 vec4 reinitTrailPosition(int index){
     float newindex = float(index%numParticles);
-    pos = texture(prevPos, vec2(newindex/(numParticles*numLayers), uv.y));
-    pos.w = calculateTrailLifetime(index);
+    pos.xyz = texture(prevPos, vec2(newindex/(numParticles*numLayers), uv.y)).xyz;
+    pos.w = pos.w + calculateTrailLifetime(index);
     return pos;
 }
 
@@ -159,7 +141,10 @@ void main() {
             //If Particle Dies (Currently resets the position and velocity)
             if (pos.w < vel.w) {
                 pos = reinitTrailPosition(index);
-                vel = vec4(0, 0, 0, 0);
+                vel = vec4(0, 0, 0, vel.w);
+                //discard;
+            }
+            if (pos.w > 2.25){
                 //discard;
             }
         }

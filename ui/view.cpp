@@ -267,7 +267,7 @@ void View::drawParticles() {
     glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "prevPos"), 0);
     glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "prevVel"), 1);
     glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "dt"), m_delta_time);
-    glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "B"), m_firework->m_drag / 100.f);
+    glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "B"), 1.f+m_firework->m_drag / 50.f);
     glUniform3f(glGetUniformLocation(m_particleUpdateProgram, "spawnPoint"), m_spawnPoint.x, m_spawnPoint.y, m_spawnPoint.z);
     glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "numLayers"), m_firework->m_numLayers);
     glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "GMultiplier"), 1.0+m_weight/5);

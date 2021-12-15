@@ -76,6 +76,10 @@ vec3 pickRainbowColor(float x) {
     return HSLtoRGB(x, 0.5, 0.5);
 }
 
+float hash(float n) {
+    return fract(sin(n)*75.5453123);
+}
+
 void main() {
     int particleID = 0;
     int triID = 0;
@@ -101,10 +105,12 @@ void main() {
     //color = pickRainbowColor(float(particleID)/numParticles);
     //Calculate color based on posTime
     //color = pickRainbowColor(velAge.w/posTime.w);
+    float max_trail_life = 2+hash(posTime.x*posTime.z);
     color = vec3(red, green, blue);
-    if(velAge.x == 0){
-        color = vec3(1.0, 1.0, 1.0);
-        diameter = 0.01;
+    if(velAge.x == 0 && velAge.z == 0){
+        float col_val = max(0.6*(1 - pow((velAge.w/max_trail_life), 5)), 0.0);
+        color = vec3(col_val);
+        diameter = max(0.015*(1 - (velAge.w/max_trail_life)), 0.0);
     }
 
     // the offset to the points of the triangle
