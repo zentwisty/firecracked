@@ -507,22 +507,22 @@ compiler_rcc_make_all: qrc_resources.cpp qrc_shaders.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp qrc_shaders.cpp
 qrc_resources.cpp: resources.qrc \
-		assets/uagh.gif \
 		shaders/shader.frag \
-		shaders/shader.vert
+		shaders/shader.vert \
+		assets/uagh.gif
 	/contrib/projects/qt5.2.0/5.2.0/gcc_64/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
 qrc_shaders.cpp: shaders/shaders.qrc \
-		shaders/horizontalBlur.frag \
-		shaders/particles_update.frag \
-		shaders/verticalBlur.frag \
-		shaders/phong.frag \
-		shaders/particles_draw.frag \
 		shaders/postProcessing.frag \
+		shaders/phong.frag \
+		shaders/particles_draw.vert \
+		shaders/horizontalBlur.frag \
+		shaders/verticalBlur.frag \
 		shaders/texture.frag \
 		shaders/phong.vert \
 		shaders/quad.vert \
-		shaders/particles_draw.vert
+		shaders/particles_draw.frag \
+		shaders/particles_update.frag
 	/contrib/projects/qt5.2.0/5.2.0/gcc_64/bin/rcc -name shaders shaders/shaders.qrc -o qrc_shaders.cpp
 
 compiler_moc_header_make_all: moc_mainwindow.cpp moc_view.cpp

@@ -30,8 +30,7 @@ View::View(QWidget *parent) : QGLWidget(ViewFormat(), parent),
     m_firstPass(true), m_evenPass(true), m_numParticles(500),
     m_angleX(-0.5f), m_angleY(0.5f), m_zoom(4.f),
     m_delta_time(0.1f),
-    m_firework(nullptr),
-    m_spawnPoint(0.f, 0.f, 0.f)
+    m_firework(nullptr)
 {
     // View needs all mouse move events, not just mouse drag events
     setMouseTracking(true);
@@ -235,7 +234,8 @@ void View::drawParticles() {
     glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "prevVel"), 1);
     glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "dt"), m_delta_time);
     glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "B"), 1.f+m_firework->m_drag / 50.f);
-    glUniform3f(glGetUniformLocation(m_particleUpdateProgram, "spawnPoint"), m_spawnPoint.x, m_spawnPoint.y, m_spawnPoint.z);
+    glUniform3f(glGetUniformLocation(m_particleUpdateProgram, "spawnPoint"), \
+                m_firework->m_spawnPoint.x, m_firework->m_spawnPoint.y, m_firework->m_spawnPoint.z);
     glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "numLayers"), m_firework->m_numLayers);
     glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "GMultiplier"), 1.0+m_weight/5);
     glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "time"), std::rand());
@@ -307,14 +307,16 @@ void View::resizeGL(int w, int h) {
 //    float ratio = static_cast<QGuiApplication *>(QCoreApplication::instance())->devicePixelRatio();
 //    w = static_cast<int>(w / ratio);
 //    h = static_cast<int>(h / ratio);
-//    glViewport(0, 0, w, h);
+    glViewport(0, 0, m_width, m_height);
 }
 
 void View::mousePressEvent(QMouseEvent *event) {
+    // TODO: ONLY WORKS WITH SQUARE VIEWPORTS
     float x =  2 * ((event->x() / static_cast<float>(m_width))  - .5f);
     float y = -2 * ((event->y() / static_cast<float>(m_height)) - .5f);
-    m_spawnPoint = glm::vec3(x, y, 0.f);
-    m_firework = std::make_unique<Firework>(m_drag, m_weight, m_red, m_green, m_blue, m_density, m_trailLength + 1);
+
+    glm::vec3 spawnPoint = glm::vec3(x, y, 0.f);
+    m_firework = std::make_unique<Firework>(spawnPoint, m_drag, m_weight, m_red, m_green, m_blue, m_density, m_trailLength + 1);
 }
 
 void View::tick() {

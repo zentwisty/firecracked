@@ -94,8 +94,6 @@ private:
 
     std::unique_ptr<Firework> m_firework;
 
-    glm::vec3 m_spawnPoint;
-
 private slots:
     void setDrag(int drag);
     void setWeight(int weight);

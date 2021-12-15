@@ -21,9 +21,10 @@ using namespace CS123::GL;
 class Firework
 {
 public:
-    Firework(int drag, int weight, int red, int green, int blue, int numParticles, int numLayers);
+    Firework(glm::vec3 spawnPoint, int drag, int weight, int red, int green, int blue, int numParticles, int numLayers);
     ~Firework();
 
+    glm::vec3 m_spawnPoint;
     int m_drag;
     int m_weight;
     int m_red;

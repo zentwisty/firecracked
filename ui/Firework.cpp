@@ -1,6 +1,7 @@
 #include "Firework.h"
 
-Firework::Firework(int drag, int weight, int red, int green, int blue, int numParticles, int numLayers):
+Firework::Firework(glm::vec3 spawnPoint, int drag, int weight, int red, int green, int blue, int numParticles, int numLayers):
+    m_spawnPoint(spawnPoint),
     m_drag(drag), m_weight(weight),
     m_red(red), m_green(green), m_blue(blue),
     m_particlesFBO1(nullptr), m_particlesFBO2(nullptr),
