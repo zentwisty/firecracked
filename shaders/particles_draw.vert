@@ -109,7 +109,7 @@ void main() {
     color = vec3(red, green, blue);
     if(velAge.x == 0 && velAge.z == 0){
         float col_val = max(0.6*(1 - pow((velAge.w/max_trail_life), 5)), 0.0);
-        color = vec3(col_val);
+        color = vec3((6*col_val + color.x)/7.f, (6*col_val + color.y)/7.f, (6*col_val + color.z)/7.f);
         diameter = max(0.015*(1 - (velAge.w/max_trail_life)), 0.0);
     }
 

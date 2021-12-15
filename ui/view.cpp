@@ -21,6 +21,7 @@ View::View(QWidget *parent) : QGLWidget(ViewFormat(), parent),
     m_time(), m_timer(), m_captureMouse(false),
     m_drag(50), m_weight(10),                   // IF YOU CHANGE THESE DEFAULTS UPDATE THE UI TOO
     m_red(230), m_green(100), m_blue(130),      // IF YOU CHANGE THESE DEFAULTS UPDATE THE UI TOO
+    m_density(300), m_trailLength(10),          // IF YOU CHANGE THESE DEFAULTS UPDATE THE UI TOO
     m_width(width()), m_height(height()),
     m_phongProgram(0), m_textureProgram(0), m_horizontalBlurProgram(0), m_verticalBlurProgram(0), m_postProcessingProgram(0),
     m_quad(nullptr),
@@ -75,6 +76,16 @@ void View::setGreen(int green)
 void View::setBlue(int blue)
 {
     m_blue = blue;
+}
+
+void View::setDensity(int density)
+{
+    m_density = density;
+}
+
+void View::setTrailLength(int trailLength)
+{
+    m_trailLength = trailLength;
 }
 
 
@@ -206,50 +217,6 @@ void View::drawBlur() {
 }
 
 void View::drawParticles() {
-    /*
-    auto prevFBO = m_evenPass ? m_particlesFBO1 : m_particlesFBO2;
-    auto nextFBO = m_evenPass ? m_particlesFBO2 : m_particlesFBO1;
-    float firstPass = m_firstPass ? 1.0f : 0.0f;
-    // TODO [Task 14] Move the particles from prevFBO to nextFBO while updating them
-
-    nextFBO->bind();
-    glUseProgram(m_particleUpdateProgram);
-    glActiveTexture(GL_TEXTURE0);
-    prevFBO->getColorAttachment(0).bind();
-    glActiveTexture(GL_TEXTURE1);
-    prevFBO->getColorAttachment(1).bind();
-    glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "firstPass"), firstPass);
-    glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "numParticles"), m_numParticles);
-    glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "prevPos"), 0);
-    glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "prevVel"), 1);
-    glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "dt"), m_delta_time);
-    m_quad->draw();
-
-    // TODO [Task 17] Draw the particles from nextFBO
-
-    nextFBO->unbind();
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glUseProgram(m_particleDrawProgram);
-    setParticleViewport();
-    glActiveTexture(GL_TEXTURE0);
-    nextFBO->getColorAttachment(0).bind();
-    glActiveTexture(GL_TEXTURE1);
-    nextFBO->getColorAttachment(1).bind();
-    glUniform1i(glGetUniformLocation(m_particleDrawProgram, "numParticles"), m_numParticles);
-    glUniform1i(glGetUniformLocation(m_particleDrawProgram, "pos"), 0);
-    glUniform1i(glGetUniformLocation(m_particleDrawProgram, "vel"), 1);
-    glUniform1f(glGetUniformLocation(m_particleDrawProgram, "red"), m_red/255.f);
-    glUniform1f(glGetUniformLocation(m_particleDrawProgram, "green"), m_green/255.f);
-    glUniform1f(glGetUniformLocation(m_particleDrawProgram, "blue"), m_blue/255.f);
-    glBindVertexArray(m_particlesVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3*m_numParticles);
-    glBindVertexArray(0);
-    glActiveTexture(GL_TEXTURE0);
-
-    m_firstPass = false;
-    m_evenPass = !m_evenPass;
-    */
 
     auto prevFBO = m_firework->m_evenPass ? m_firework->m_particlesFBO1 : m_firework->m_particlesFBO2;
     auto nextFBO = m_firework->m_evenPass ? m_firework->m_particlesFBO2 : m_firework->m_particlesFBO1;
@@ -347,50 +314,7 @@ void View::mousePressEvent(QMouseEvent *event) {
     float x =  2 * ((event->x() / static_cast<float>(m_width))  - .5f);
     float y = -2 * ((event->y() / static_cast<float>(m_height)) - .5f);
     m_spawnPoint = glm::vec3(x, y, 0.f);
-    m_firework = std::make_unique<Firework>(m_drag, m_weight, m_red, m_green, m_blue);
-}
-
-//void View::mouseMoveEvent(QMouseEvent *event) {
-//    // This starter code implements mouse capture, which gives the change in
-//    // mouse position since the last mouse movement. The mouse needs to be
-//    // recentered after every movement because it might otherwise run into
-//    // the edge of the screen, which would stop the user from moving further
-//    // in that direction. Note that it is important to check that deltaX and
-//    // deltaY are not zero before recentering the mouse, otherwise there will
-//    // be an infinite loop of mouse move events.
-//    if(m_captureMouse) {
-//        int deltaX = event->x() - width() / 2;
-//        int deltaY = event->y() - height() / 2;
-//        if (!deltaX && !deltaY) return;
-//        QCursor::setPos(mapToGlobal(QPoint(width() / 2, height() / 2)));
-
-//        // TODO: Handle mouse movements here
-//    }
-//}
-
-//void View::mouseReleaseEvent(QMouseEvent *event) {
-
-//}
-
-//void View::keyPressEvent(QKeyEvent *event) {
-//    if (event->key() == Qt::Key_Escape) QApplication::quit();
-
-//    // TODO: Handle keyboard presses here
-//}
-
-//void View::keyReleaseEvent(QKeyEvent *event) {
-
-//}
-
-void View::onLaunch() {
-    std::cout << "size: " << m_drag << std::endl;
-    std::cout << "weight: " << m_weight << std::endl;
-    std::cout << "red: " << m_red << std::endl;
-    std::cout << "green: " << m_green << std::endl;
-    std::cout << "blue: " << m_blue << std::endl;
-
-    // TODO: SPAWN THE FIREWORK HERE
-    //m_firework = std::make_unique<Firework>(m_drag, m_weight, m_red, m_green, m_blue);
+    m_firework = std::make_unique<Firework>(m_drag, m_weight, m_red, m_green, m_blue, m_density, m_trailLength + 1);
 }
 
 void View::tick() {

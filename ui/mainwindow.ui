@@ -45,41 +45,14 @@
         <height>16777215</height>
        </size>
       </property>
-      <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0">
-       <item row="0" column="0" colspan="3">
-        <widget class="QLabel" name="dragLabel">
-         <property name="text">
-          <string>Drag</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="colorLabel">
-         <property name="text">
-          <string>Color</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="2" alignment="Qt::AlignHCenter">
-        <widget class="QSlider" name="BSlider">
+      <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0">
+       <item row="6" column="0" alignment="Qt::AlignHCenter">
+        <widget class="QSlider" name="RSlider">
          <property name="maximum">
           <number>255</number>
          </property>
-         <property name="value">
-          <number>130</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1" alignment="Qt::AlignHCenter">
-        <widget class="QSlider" name="GSlider">
-         <property name="maximum">
-          <number>255</number>
-         </property>
-         <property name="value">
-          <number>100</number>
+         <property name="sliderPosition">
+          <number>230</number>
          </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -96,13 +69,23 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0" alignment="Qt::AlignHCenter">
-        <widget class="QSlider" name="RSlider">
+       <item row="7" column="0">
+        <widget class="QLabel" name="RLabel">
+         <property name="text">
+          <string>R</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1" alignment="Qt::AlignHCenter">
+        <widget class="QSlider" name="GSlider">
          <property name="maximum">
           <number>255</number>
          </property>
-         <property name="sliderPosition">
-          <number>230</number>
+         <property name="value">
+          <number>100</number>
          </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -113,16 +96,6 @@
         <widget class="QLabel" name="weightLabel">
          <property name="text">
           <string>Weight</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="QLabel" name="GLabel">
-         <property name="text">
-          <string>G</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -139,6 +112,43 @@
          </property>
          <property name="invertedAppearance">
           <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QLabel" name="dragLabel">
+         <property name="text">
+          <string>Drag</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2" alignment="Qt::AlignHCenter">
+        <widget class="QSlider" name="BSlider">
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>130</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QLabel" name="GLabel">
+         <property name="text">
+          <string>G</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="colorLabel">
+         <property name="text">
+          <string>Color</string>
          </property>
         </widget>
        </item>
@@ -159,19 +169,48 @@
         </widget>
        </item>
        <item row="8" column="0" colspan="3">
-        <widget class="QPushButton" name="launchButton">
+        <widget class="QLabel" name="densityLabel">
          <property name="text">
-          <string>Launch!</string>
+          <string>Density</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="RLabel">
-         <property name="text">
-          <string>R</string>
+       <item row="11" column="0" colspan="3">
+        <widget class="QSpinBox" name="trailLengthSpinBox">
+         <property name="suffix">
+          <string/>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+         <property name="maximum">
+          <number>50</number>
+         </property>
+         <property name="value">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0" colspan="3">
+        <widget class="QSpinBox" name="densitySpinBox">
+         <property name="suffix">
+          <string/>
+         </property>
+         <property name="prefix">
+          <string/>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>500</number>
+         </property>
+         <property name="value">
+          <number>300</number>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0" colspan="3">
+        <widget class="QLabel" name="trailLengthLabel">
+         <property name="text">
+          <string>Trail Length</string>
          </property>
         </widget>
        </item>
@@ -206,7 +245,8 @@
     <slot>setRed(int)</slot>
     <slot>setGreen(int)</slot>
     <slot>setBlue(int)</slot>
-    <slot>onLaunch()</slot>
+    <slot>setDensity(int)</slot>
+    <slot>setTrailLength(int)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -295,14 +335,30 @@
    </hints>
   </connection>
   <connection>
-   <sender>launchButton</sender>
-   <signal>clicked()</signal>
+   <sender>densitySpinBox</sender>
+   <signal>valueChanged(int)</signal>
    <receiver>view</receiver>
-   <slot>onLaunch()</slot>
+   <slot>setDensity(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>99</x>
-     <y>575</y>
+     <y>509</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>502</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>trailLengthSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>view</receiver>
+   <slot>setTrailLength(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>574</y>
     </hint>
     <hint type="destinationlabel">
      <x>502</x>

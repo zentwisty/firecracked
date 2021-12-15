@@ -46,6 +46,9 @@ private:
     int m_green;
     int m_blue;
 
+    int m_density;
+    int m_trailLength;
+
     void drawBlur();
     void drawParticles();
     void setParticleViewport();
@@ -100,7 +103,9 @@ private slots:
     void setGreen(int green);
     void setBlue(int blue);
 
-    void onLaunch();
+    void setDensity(int density);
+    void setTrailLength(int trailLength);
+
     void tick();
 };
 
