@@ -3,6 +3,7 @@
 uniform sampler2D pos;
 uniform sampler2D vel;
 uniform int numParticles;
+uniform int numLayers;
 uniform float red;
 uniform float green;
 uniform float blue;
@@ -92,7 +93,7 @@ void main() {
     velAge = texelFetch(vel, ivec2(particleID,0), 0);
 
     // Calculate diameter based on age and lifetime
-    float diameter = max(0.02*(1 -velAge.w/posTime.w), 0.0);
+    float diameter = max(0.02*(1 - velAge.w/posTime.w), 0.0);
     //diameter *= min(min(1.0, velAge.w / (0.1 * posTime.w)),
     //                min(1.0, abs(posTime.w - velAge.w) / (0.1 * posTime.w)));
 
@@ -101,6 +102,10 @@ void main() {
     //Calculate color based on posTime
     //color = pickRainbowColor(velAge.w/posTime.w);
     color = vec3(red, green, blue);
+    if(velAge.x == 0){
+        color = vec3(1.0, 1.0, 1.0);
+        diameter = 0.01;
+    }
 
     // the offset to the points of the triangle
     vec4 triPos = diameter * TRI_VERTS[triID];

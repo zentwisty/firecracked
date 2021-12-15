@@ -35,6 +35,7 @@ public:
     bool m_firstPass;
     bool m_evenPass;
     int m_numParticles;
+    int m_numLayers;
 };
 
 #endif // FIREWORK_H

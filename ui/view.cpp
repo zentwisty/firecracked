@@ -26,7 +26,7 @@ View::View(QWidget *parent) : QGLWidget(ViewFormat(), parent),
     m_quad(nullptr),
     m_blurFBO1(nullptr), m_blurFBO2(nullptr),
     m_particlesFBO1(nullptr), m_particlesFBO2(nullptr), m_particlesFBOfinal(nullptr),
-    m_firstPass(true), m_evenPass(true), m_numParticles(5000),
+    m_firstPass(true), m_evenPass(true), m_numParticles(500),
     m_angleX(-0.5f), m_angleY(0.5f), m_zoom(4.f),
     m_delta_time(0.1f),
     m_firework(nullptr),
@@ -269,6 +269,9 @@ void View::drawParticles() {
     glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "dt"), m_delta_time);
     glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "B"), m_firework->m_drag / 100.f);
     glUniform3f(glGetUniformLocation(m_particleUpdateProgram, "spawnPoint"), m_spawnPoint.x, m_spawnPoint.y, m_spawnPoint.z);
+    glUniform1i(glGetUniformLocation(m_particleUpdateProgram, "numLayers"), m_firework->m_numLayers);
+    glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "GMultiplier"), 1.0+m_weight/5);
+    glUniform1f(glGetUniformLocation(m_particleUpdateProgram, "time"), std::rand());
     m_quad->draw();
     nextFBO->unbind();
 
@@ -289,10 +292,11 @@ void View::drawParticles() {
     glUniform1f(glGetUniformLocation(m_particleDrawProgram, "red"), m_firework->m_red/255.f);
     glUniform1f(glGetUniformLocation(m_particleDrawProgram, "green"), m_firework->m_green/255.f);
     glUniform1f(glGetUniformLocation(m_particleDrawProgram, "blue"), m_firework->m_blue/255.f);
+    glUniform1i(glGetUniformLocation(m_particleDrawProgram, "numLayers"), m_firework->m_numLayers);
 
 
     glBindVertexArray(m_particlesVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3*m_firework->m_numParticles);
+    glDrawArrays(GL_TRIANGLES, 0, 3*m_firework->m_numParticles*m_firework->m_numLayers);
     glBindVertexArray(0);
 
     m_particlesFBOfinal->unbind();
